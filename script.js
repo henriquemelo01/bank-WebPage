@@ -128,17 +128,17 @@ btnLearnMore.addEventListener('click', () =>
 
 // ==================================================
 
-// Menu Hover effect using JS
+// Menu Hover effect using JS - Old hover
 
-const navMenu = document.querySelectorAll('.nav__link');
+// const navMenu = document.querySelectorAll('.nav__link');
 
-navMenu.forEach(function (item) {
-  item.addEventListener('mouseenter', () => (item.style.color = 'red'));
-});
+// navMenu.forEach(function (item) {
+//   item.addEventListener('mouseenter', () => (item.style.color = 'red'));
+// });
 
-navMenu.forEach(function (item) {
-  item.addEventListener('mouseleave', () => (item.style.color = '#333'));
-});
+// navMenu.forEach(function (item) {
+//   item.addEventListener('mouseleave', () => (item.style.color = '#333'));
+// });
 
 // ==================================================
 
@@ -264,3 +264,34 @@ tabsContainer.addEventListener('click', function (event) {
 //     currentTab.classList.add('operations__tab--active');
 //   }
 // });
+
+// Menu fade animation passing args to event handler
+const nav = document.querySelector('.nav');
+
+const handleHover = function (e, opacity) {
+  // Identificando os elementos que fazem parte do menu de navegação: Neste caso não foi necessário usar o metodo closest, uma vez que o elemento alvo (nav__link) não contém nenhum children
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+
+    // Getting other elements - siblings
+
+    // Getting parent that contains the class .nav + select children using that contains the class .nav__link
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+
+    siblings.forEach(function (el) {
+      // Restrição - Excluir current link
+      if (el !== link) el.style.opacity = opacity;
+    });
+
+    const logo = link.closest('.nav').querySelector('img');
+    logo.style.opacity = opacity;
+  }
+};
+
+// "mouseouver" é similar ao "mouseenter", entretando o evento mouseenter não é propagado (event bubbling)
+
+nav.addEventListener('mouseover', function (e) {
+  handleHover(e, 0.5);
+});
+
+nav.addEventListener('mouseout', e => handleHover(e, 1));
