@@ -192,7 +192,14 @@ tabsContainer.addEventListener('click', function (event) {
   // Identificando qual elemento foi clicado usando event.target + Selecionando apenas os botões (tabs). Se não utilizarmos o metodo .closest,  quando clicarmos no spam que esta dentro do botão o retorno seria o proprio spam, assim o metodo faz com que o retorno seja o botão (tab)
 
   const currentTab = event.target.closest('.operations__tab');
+
+  // Não executar o código quando clicamos na região vazia que esta entre a borda do container e os botões(tabs)
+  if (!currentTab) return;
+
   const contentNum = currentTab.dataset.tab;
+  const currentContent = document.querySelector(
+    `.operations__content--${contentNum}`
+  );
 
   // console.log(contentNum);
 
@@ -201,15 +208,20 @@ tabsContainer.addEventListener('click', function (event) {
     if (t !== currentTab) t.classList.remove('operations__tab--active');
   });
 
-  // Efeito de Tab Ativa
+  // Add Efeito de Tab Ativa
   currentTab.classList.add('operations__tab--active');
 
   // Esconder conteúdos que não correspondem a tab clicada - .remove(operations__content--active)
+  tabContents.forEach(function (content) {
+    if (content !== currentContent)
+      content.classList.remove('operations__content--active');
+  });
 
   // Exibir conteudo da tab ativa
+  currentContent.classList.add('operations__content--active');
 });
 
-// Old Code
+// Old Code:
 
 // tabContainer.addEventListener('click', function (event) {
 //   // Usando o metodo childrenElement.closest() faz-se uma varredura procurando o elemento "acima" ou parent que contém a classe passada como parãmetro (query string). OBS: Se o event.target contém a classe especificada na query string, será retornado o proprio elemento.
