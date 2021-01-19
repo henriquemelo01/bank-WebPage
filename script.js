@@ -268,8 +268,11 @@ tabsContainer.addEventListener('click', function (event) {
 // Menu fade animation passing args to event handler
 const nav = document.querySelector('.nav');
 
-const handleHover = function (e, opacity) {
+// OBS: Quando queremos passar mais de um argumento para uma handler function, utilizamos this para acessa-lo. Um event handler só tem um parametro padrão (event que ocorreu)
+const handleHover = function (e) {
   // Identificando os elementos que fazem parte do menu de navegação: Neste caso não foi necessário usar o metodo closest, uma vez que o elemento alvo (nav__link) não contém nenhum children
+  // console.log(this); // Normalmente, usualy corresponde ao elemetno que chamou o eventListener, entretanto como setamos o this manualmente ele retorna o valor passado para função
+
   if (e.target.classList.contains('nav__link')) {
     const link = e.target;
 
@@ -278,20 +281,34 @@ const handleHover = function (e, opacity) {
     // Getting parent that contains the class .nav + select children using that contains the class .nav__link
     const siblings = link.closest('.nav').querySelectorAll('.nav__link');
 
-    siblings.forEach(function (el) {
-      // Restrição - Excluir current link
-      if (el !== link) el.style.opacity = opacity;
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = this;
     });
 
     const logo = link.closest('.nav').querySelector('img');
-    logo.style.opacity = opacity;
+    logo.style.opacity = this;
   }
 };
 
 // "mouseouver" é similar ao "mouseenter", entretando o evento mouseenter não é propagado (event bubbling)
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
 
-nav.addEventListener('mouseover', function (e) {
-  handleHover(e, 0.5);
+// Stick navigation - Menu se move quando rolamos a pagina (Scroll)
+
+// 1º Metodo - Performance do sistema é prejudicado uma vez que o evento é disparado a todo momento
+
+// Obtendo coordenadaas da section 1
+const initialCord = section1.getBoundingClientRect();
+
+// Evento é disparado toda vez que rolamos a página
+window.addEventListener('scroll', function () {
+  // console.log(window.scrollY); // distância do limite do view port até o topo da página
+
+  // O efeito de navigation stick - só ocorrerá quando entrarmos na primeira sessão da pagina  (section--1 , features)
+
+  if (window.scrollY > initialCord.top) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
 });
 
-nav.addEventListener('mouseout', e => handleHover(e, 1));
+// 2º Metodo para implementar efeito no menu
