@@ -182,47 +182,73 @@ navLinks.addEventListener(
 
 // Tabbed Component - Operation Section
 
-const operationsContainer = document.querySelector(
-  '.operations__tab-container'
-);
-operationsContainer.addEventListener('click', function (event) {
-  // Usando o metodo childrenElement.closest() faz-se uma varredura procurando o elemento "acima" ou parent que contém a classe passada como parãmetro (query string). OBS: Se o event.target contém a classe especificada na query string, será retornado o proprio elemento.
+const tabsContainer = document.querySelector('.operations__tab-container'); // Event delegation
+const tabs = document.querySelectorAll('.operations__tab');
+const tabContents = document.querySelectorAll('.operations__content');
+
+// Refactoring Tabbed Component functionality
+
+tabsContainer.addEventListener('click', function (event) {
+  // Identificando qual elemento foi clicado usando event.target + Selecionando apenas os botões (tabs). Se não utilizarmos o metodo .closest,  quando clicarmos no spam que esta dentro do botão o retorno seria o proprio spam, assim o metodo faz com que o retorno seja o botão (tab)
 
   const currentTab = event.target.closest('.operations__tab');
+  const contentNum = currentTab.dataset.tab;
 
-  // Acessando apenas os elementos que são tab
-  if (currentTab.classList.contains('operations__tab')) {
-    // Obtendo valor do dataset para identificar qual conteúdo será exibido
-    const currentTabNum = currentTab.dataset.tab;
+  // console.log(contentNum);
 
-    // Acessar conteudo com valor da currentTabNum
-    const currentContent = document.querySelector(
-      `.operations__content--${currentTabNum}`
-    );
+  // Remover o efeito de Tab ativa das demais tabs
+  tabs.forEach(function (t) {
+    if (t !== currentTab) t.classList.remove('operations__tab--active');
+  });
 
-    // Get Siblings - Removendo classe que faz com que o conteudo dos demais operations content seja exibido
+  // Efeito de Tab Ativa
+  currentTab.classList.add('operations__tab--active');
 
-    [...currentContent.parentElement.children].forEach(function (conteudo) {
-      // Obtendo Elementos que são conteudo
-      if (conteudo.classList.contains('operations__content')) {
-        // Excluindo currentContent
-        if (conteudo !== currentContent)
-          // Remover demais conteúdos que não correspondem ao conteudo da tab
-          conteudo.classList.remove('operations__content--active');
-      }
-    });
+  // Esconder conteúdos que não correspondem a tab clicada - .remove(operations__content--active)
 
-    // Obtendo demais tabs (botões) e excluindo efeito de tab ativa
-    [...currentTab.parentElement.children].forEach(function (tab) {
-      if (tab !== currentTab) {
-        tab.classList.remove('operations__tab--active');
-      }
-    });
-
-    // Efeito tab ativo
-    currentContent.classList.add('operations__content--active');
-
-    // Exibir conteúdo do tab ativo
-    currentTab.classList.add('operations__tab--active');
-  }
+  // Exibir conteudo da tab ativa
 });
+
+// Old Code
+
+// tabContainer.addEventListener('click', function (event) {
+//   // Usando o metodo childrenElement.closest() faz-se uma varredura procurando o elemento "acima" ou parent que contém a classe passada como parãmetro (query string). OBS: Se o event.target contém a classe especificada na query string, será retornado o proprio elemento.
+
+//   const currentTab = event.target.closest('.operations__tab');
+
+//   // Acessando apenas os elementos que são tab
+//   if (currentTab.classList.contains('operations__tab')) {
+//     // Obtendo valor do dataset para identificar qual conteúdo será exibido
+//     const currentTabNum = currentTab.dataset.tab;
+
+//     // Acessar conteudo com valor da currentTabNum
+//     const currentContent = document.querySelector(
+//       `.operations__content--${currentTabNum}`
+//     );
+
+//     // Get Siblings - Removendo classe que faz com que o conteudo dos demais operations content seja exibido
+
+//     [...currentContent.parentElement.children].forEach(function (conteudo) {
+//       // Obtendo Elementos que são conteudo
+//       if (conteudo.classList.contains('operations__content')) {
+//         // Excluindo currentContent
+//         if (conteudo !== currentContent)
+//           // Remover demais conteúdos que não correspondem ao conteudo da tab
+//           conteudo.classList.remove('operations__content--active');
+//       }
+//     });
+
+//     // Obtendo demais tabs (botões) e excluindo efeito de tab ativa
+//     [...currentTab.parentElement.children].forEach(function (tab) {
+//       if (tab !== currentTab) {
+//         tab.classList.remove('operations__tab--active');
+//       }
+//     });
+
+//     // Efeito tab ativo
+//     currentContent.classList.add('operations__content--active');
+
+//     // Exibir conteúdo do tab ativo
+//     currentTab.classList.add('operations__tab--active');
+//   }
+// });
