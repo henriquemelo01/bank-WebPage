@@ -79,39 +79,39 @@ Obs 2: Os metodos .querySelector() e .querySelectorAll() são comuns ao element 
 
 */
 
-// ==================================================
+// // ==================================================
 
-// Creating Cookie Message
+// // Creating Cookie Message
 
-const header = document.querySelector('.header');
-const message = document.createElement('div');
+// const header = document.querySelector('.header');
+// const message = document.createElement('div');
 
-// Modifying DOM element
-message.classList.add('cookie-message');
-message.innerHTML =
-  '"We use cookies for improved functionality and analytics. <button class = "btn btn--close-cookie">Got it!</button>"';
+// // Modifying DOM element
+// message.classList.add('cookie-message');
+// message.innerHTML =
+//   '"We use cookies for improved functionality and analytics. <button class = "btn btn--close-cookie">Got it!</button>"';
 
-// Insert DOM element (Add element before header as a sibling)
+// // Insert DOM element (Add element before header as a sibling)
 
-header.before(message);
+// header.after(message);
 
-document
-  .querySelector('.btn--close-cookie')
-  .addEventListener('click', () => message.remove());
+// document
+//   .querySelector('.btn--close-cookie')
+//   .addEventListener('click', () => message.remove());
 
-// Styles; Element.style.propertie = "value0" - creating in line properties ** Prioridade Max de estilo
+// // Styles; Element.style.propertie = "value0" - creating in line properties ** Prioridade Max de estilo
 
-message.style.backgroundColor = '#37383d';
-message.style.width = '120%';
-message.style.height =
-  Number.parseFloat(getComputedStyle(message).height, 10) + 15 + 'px';
+// message.style.backgroundColor = '#37383d';
+// message.style.width = '120%';
+// message.style.height =
+//   Number.parseFloat(getComputedStyle(message).height, 10) + 15 + 'px';
 
-// Obs: usando getComputedStyle(element) acessamos todos estilos do element, inclusive, aqueles que foram definidos no stylesheet (classe css)
+// // Obs: usando getComputedStyle(element) acessamos todos estilos do element, inclusive, aqueles que foram definidos no stylesheet (classe css)
 
-// console.log(getComputedStyle(message).width);
-// console.log(message.width); // undefined
+// // console.log(getComputedStyle(message).width);
+// // console.log(message.width); // undefined
 
-message.style.margin = '2.5px';
+// message.style.margin = '2.5px';
 
 // ==================================================
 
@@ -298,17 +298,37 @@ nav.addEventListener('mouseout', handleHover.bind(1));
 
 // 1º Metodo - Performance do sistema é prejudicado uma vez que o evento é disparado a todo momento
 
-// Obtendo coordenadaas da section 1
-const initialCord = section1.getBoundingClientRect();
+// // Obtendo coordenadaas da section 1
+// const initialCord = section1.getBoundingClientRect();
 
-// Evento é disparado toda vez que rolamos a página
-window.addEventListener('scroll', function () {
-  // console.log(window.scrollY); // distância do limite do view port até o topo da página
+// // Evento é disparado toda vez que rolamos a página
+// window.addEventListener('scroll', function () {
+//   // console.log(window.scrollY); // distância do limite do view port até o topo da página
 
-  // O efeito de navigation stick - só ocorrerá quando entrarmos na primeira sessão da pagina  (section--1 , features)
+//   // O efeito de navigation stick - só ocorrerá quando entrarmos na primeira sessão da pagina  (section--1 , features)
 
-  if (window.scrollY > initialCord.top) nav.classList.add('sticky');
+//   if (window.scrollY > initialCord.top) nav.classList.add('sticky');
+//   else nav.classList.remove('sticky');
+// });
+
+// 2º Metodo para implementar efeito no menu - Using The Intersection observer API. Usado para criar paginas "infinitas"
+
+// Stick nav - functionality v2
+
+const stickNav = function (entries) {
+  const [entry] = entries; // entries [0] - primeira intersecção
+
+  // Sticky effect só ocorre quando o viewport não intercept o header
+  console.log(entry.isIntersecting);
+  if (!entry.isIntersecting) nav.classList.add('sticky');
   else nav.classList.remove('sticky');
-});
+};
 
-// 2º Metodo para implementar efeito no menu
+// Chamar a call back function quando o header sumir do viewport - section 1 esta depois do header
+const header = document.querySelector('.header');
+
+const headerObserver = new IntersectionObserver(stickNav, {
+  root: null, // viewport
+  threshold: 0, // header não pode ser mais visto no viewport
+});
+headerObserver.observe(header);
