@@ -314,21 +314,54 @@ nav.addEventListener('mouseout', handleHover.bind(1));
 // 2º Metodo para implementar efeito no menu - Using The Intersection observer API. Usado para criar paginas "infinitas"
 
 // Stick nav - functionality v2
+// A call back é disparada toda vez que o elemento que será observado esta ou não no viewport - a call back recebe dois parametros (entries - informações sobre o elemento que esta sendo observado e observer, informações sobre o observer)
 
 const stickNav = function (entries) {
   const [entry] = entries; // entries [0] - primeira intersecção
 
   // Sticky effect só ocorre quando o viewport não intercept o header
-  console.log(entry.isIntersecting);
+
   if (!entry.isIntersecting) nav.classList.add('sticky');
   else nav.classList.remove('sticky');
 };
 
 // Chamar a call back function quando o header sumir do viewport - section 1 esta depois do header
 const header = document.querySelector('.header');
+const navHeigth = nav.getBoundingClientRect().height;
 
 const headerObserver = new IntersectionObserver(stickNav, {
   root: null, // viewport
   threshold: 0, // header não pode ser mais visto no viewport
+  rootMargin: `-${navHeigth}px`, // Evento é disparado 90px antes do threshold
 });
 headerObserver.observe(header);
+
+// Scroll Animations:
+
+// Reveal sections
+
+const sections = document.querySelectorAll('.section');
+
+const revealSection = function (entries, observer) {
+  // valor inicial do entries para este caso são todos Intersection Objects entries , entretanto quando ocorre a 1 interseção o valor será apenas o Object Intersection entry correspondente
+
+  const [entry] = entries;
+  // console.log(entries);
+  // console.log(entry);
+
+  if (!entry.isIntersecting) return;
+  if (entry.isIntersecting) entry.target.classList.remove('section--hidden');
+
+  // Parar de observar elemento após ser revelado
+  sectionsObserver.unobserve(entry.target);
+};
+
+const sectionsObserver = new IntersectionObserver(revealSection, {
+  root: null, // viewport
+  threshold: 0.25, // revealing the section when the section is at least 25% of viewport
+});
+
+sections.forEach(section => {
+  sectionsObserver.observe(section);
+  section.classList.add('section--hidden');
+});
