@@ -9,7 +9,7 @@
 <br>
     <div style = "font-size: 16px">
         <p>Neste projeto foram empregados diversos conceitos importantes relacionados a manipulação da DOM, tais como : <strong> Add/Remove classes, styles, Events, Event Delegation e DOM Traversing. </strong></p>
-        <p> Além disso, também foi utilizada a <strong>Intersection Observer API</strong> para fazer os efeitos de scroll e para carregar as imagens de alta resolução durante a utilização da pagina, uma vez que o carregamento de imagens tem um grande influencia no tempo de carregamento da página. </p>
+        <p> Além disso, também foi utilizada a <strong>Intersection Observer API</strong> para fazer os efeitos de scroll e para carregar as imagens de alta resolução durante a utilização da página, uma vez que o carregamento de imagens tem uma grande influencia no tempo de carregamento da página. </p>
     </div>
 
 <hr />
