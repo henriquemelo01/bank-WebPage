@@ -385,7 +385,7 @@ const showImage = function (entries, observer) {
     entry.target.classList.remove('lazy-img')
   );
 
-  img.unobserve(entry.target);
+  imgObs.unobserve(entry.target);
 };
 
 // Criando observador - Intersaction Observer
@@ -397,3 +397,57 @@ const imgObs = new IntersectionObserver(showImage, {
 
 // Observando todas as imagens que contem o atributo data-src
 document.querySelectorAll('img[data-src]').forEach(img => imgObs.observe(img));
+
+// Slider
+
+// Para fazer os slides se mover para a direita , utilizou-se a propriedade do css transform: translateX(+100%).
+
+// Inicio: 0% , 100% , 200%, QUando clicar no botão da direita subtrair 100% da proprieda de cada um dos sliders. QUando clicar para esquerda adicionar 100% .
+
+// propertie css : translateX(%)
+const sliderContainer = document.querySelector('.slider');
+const slides = document.querySelectorAll('.slide');
+console.log(slides);
+const startCoord = [0, 100, 200];
+const finalCoord = [-200, -100, 0];
+let currentCoord = [...startCoord];
+
+sliderContainer.addEventListener('click', function (e) {
+  const isSliderBtn = e.target.classList.contains('slider__btn');
+
+  // Se o elemento clicado não for o botão não executar demais linhas de código
+  if (!isSliderBtn) return;
+
+  // Botão Direito
+  if (e.target.classList.contains('slider__btn--right')) {
+    currentCoord = currentCoord.map(cord => (cord -= 100));
+
+    slides.forEach((slide, i) => {
+      if (currentCoord[2] >= 0) {
+        console.log(currentCoord);
+        slide.style.transform = `translateX(${currentCoord[i]}%)`;
+      }
+      if (currentCoord[2] === -100) {
+        currentCoord = startCoord;
+        slides.forEach(
+          slide => (slide.style.transform = `translateX(${currentCoord[i]}%)`)
+        );
+      }
+    });
+  } else {
+    // Btn Esquerdo
+    currentCoord = currentCoord.map(cord => (cord += 100)); // Acrescentando 100 a cada elemento do array currentCoord
+
+    slides.forEach((slide, i) => {
+      if (currentCoord[0] > 0) {
+        currentCoord = finalCoord;
+        slides.forEach(
+          (slide, i) =>
+            (slide.style.transform = `translateX(${currentCoord[i]}%)`)
+        );
+      } else {
+        slide.style.transform = `translateX(${currentCoord[i]}%)`;
+      }
+    });
+  }
+});
