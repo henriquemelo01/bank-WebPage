@@ -338,7 +338,7 @@ headerObserver.observe(header);
 
 // Scroll Animations:
 
-// Reveal sections
+// Reveal sections ****
 
 const sections = document.querySelectorAll('.section');
 
@@ -348,7 +348,6 @@ const revealSection = function (entries, observer) {
   const [entry] = entries;
   // console.log(entries);
   // console.log(entry);
-
   if (!entry.isIntersecting) return;
   if (entry.isIntersecting) entry.target.classList.remove('section--hidden');
 
@@ -365,3 +364,36 @@ sections.forEach(section => {
   sectionsObserver.observe(section);
   section.classList.add('section--hidden');
 });
+
+// Lazy loading images: As imagens podem ser um problema para os sites, uma vez que seu carregamento tem grande influencia no tempo de carregamento das paginas web. Assim, é interessante não carrega-las ao iniciar o site/aplicação, mas durante o uso da mesma pelo usuario.
+
+// 1) Adicionar ao HTML a imagem com uma resolução muito baixa + Sobrepor um "blur"
+// 2 ) Durante a execução substituir a imagem para a resolução original + Retirar o "blur"
+// - Criar um observador que ira observar as imagens e após a intersecção executa uma call back function que substitui o atributo src pela imagem de alta resolução que esta "armazenada" no data-src e remove o efeito de blur que esta sobrepondo a imagem
+
+const showImage = function (entries, observer) {
+  const [entry] = entries;
+
+  // Se não há intersecção não executar o código abaixo
+  if (!entry.isIntersecting) return;
+
+  // Substituindo src attribute pelo data-src
+  entry.target.src = entry.target.dataset.src;
+
+  // Quando carregar a imagem na pagina, tirar efeito de blur (lazy-img)
+  entry.target.addEventListener('load', () =>
+    entry.target.classList.remove('lazy-img')
+  );
+
+  img.unobserve(entry.target);
+};
+
+// Criando observador - Intersaction Observer
+const imgObs = new IntersectionObserver(showImage, {
+  root: null, // viewport
+  threshold: 0,
+  rootMargin: '150px', // Aplicous-se rootmargin para aumentar o "alcance" do viewport e assim forçar o observador chamar a callback 150px antes do usuario visualizar a imagem:
+});
+
+// Observando todas as imagens que contem o atributo data-src
+document.querySelectorAll('img[data-src]').forEach(img => imgObs.observe(img));
